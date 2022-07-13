@@ -1,0 +1,59 @@
+#!/bin/bash
+
+input_1="$1"
+
+if [[ $input_1 = "" ]]; then
+	printf "please give a file path: poemaker <filename>\n"
+	exit 1
+fi
+
+title="$(head -n 1 $1)"
+poem_content="$(sed -E '1d;:a;N;$!ba;s/\r{0,1}\n/\\n/g' ./$1)"
+date="$(date '+%y.%-m.%-d')"
+gradient_number="$(shuf -i 0-19 -n 1)"
+
+if [[ $gradient_number -le 9 ]]; then
+	text_color="#000000"
+else
+	text_color="#ffffff"
+fi
+
+create_contents() {
+	cp "/home/skarphet/.local/share/gradients/$gradient_number.png" ./.bg.png
+
+	convert -background transparent \
+		-fill "$text_color" \
+		-font /home/skarphet/.local/share/fonts/ReadexPro-Bold.ttf \
+		-pointsize 60 \
+		label:"$title" \
+		./.title.png
+
+	convert -background transparent \
+		-fill "$text_color" \
+		-font /home/skarphet/.local/share/fonts/ReadexPro-Light.ttf \
+		-interline-spacing -4 \
+		-pointsize 40 \
+		label:"$poem_content" \
+		./.poem_content.png
+
+	convert -background transparent \
+		-fill "$text_color" \
+		-font /home/skarphet/.local/share/fonts/ReadexPro-SemiBold.ttf \
+		-pointsize 50 \
+		label:"$date" \
+		./.date.png
+}
+
+merge_contents() {
+	composite -geometry +40+25 \
+	./.title.png ./.bg.png "./$title.png"
+	composite -geometry +40+120 \
+	./.poem_content.png "./$title.png" "./$title.png"
+	composite -gravity SouthEast \
+	-geometry +40+28 \
+	./.date.png "./$title.png" "./$title.png"
+}
+
+create_contents
+merge_contents
+rm ./.bg.png ./.title.png ./.poem_content.png ./.date.png
