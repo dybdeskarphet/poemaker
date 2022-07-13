@@ -1,5 +1,5 @@
 # Poemakegr (Poemaker Gradient)
-This script creates a square gradient with text. It is used for making poem posts for Instagram.
+This script creates a square gradient with text. It is used for making poem posts for [Instagram](https://www.instagram.com/dybdeskarphet.siir).
 
 # Usage
 - Download [Readex Pro](https://fonts.google.com/specimen/Readex+Pro) font and copy the __static__ fonts to `$HOME/.local/share/fonts`
