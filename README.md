@@ -1,6 +1,7 @@
 # poemaker / poemakegr
-__Poemakegr:__ Creates a square gradient with text. 
-__Poemaker:__ Creates solid colored square with text. 
+__poemakegr:__ Creates a square gradient with text. 
+
+__poemaker:__ Creates solid colored square with text. 
 
 ## What are these used for?
 For making poem posts for my [Instagram](https://www.instagram.com/dybdeskarphet.siir).
