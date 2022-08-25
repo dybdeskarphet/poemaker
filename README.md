@@ -10,7 +10,7 @@ __poemaker:__ Creates solid colored square with text.
 - Run `poemakegr <text-file-name.txt>`
 
 ## 💡 FAQ
-### Why is this repo gigantic in size
+### Why is this repo gigantic in size?
 Because of my old commit where I added a 6000x6000(px) PNG file 😬. Use `Download ZIP` from the `Code` menu instead of cloning the repository.
 
 ### What are these used for?
