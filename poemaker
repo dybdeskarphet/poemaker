@@ -34,40 +34,40 @@ random_color=$(shuf -i 0-17 -n 1)
 date="$(date '+%y.%-m.%-d')"
 
 create_contents() {
-	convert -size 1000x1000 \
+	convert -size 2000x2000 \
 		canvas:"${colors[$random_color]}" \
 		./.bg.png
 
 	convert -background transparent \
 		-fill "#ffffff" \
 		-font "$HOME"/.local/share/fonts/ReadexPro-Bold.ttf \
-		-pointsize 60 \
+		-pointsize 120 \
 		label:"$title" \
 		./.title.png
 
 	convert -background transparent \
 		-fill "#ffffff" \
 		-font "$HOME"/.local/share/fonts/ReadexPro-Light.ttf \
-		-interline-spacing -4 \
-		-pointsize 40 \
+		-interline-spacing -8 \
+		-pointsize 81 \
 		label:"$poem_content" \
 		./.poem_content.png
 
 	convert -background transparent \
 		-fill "#ffffff" \
 		-font "$HOME"/.local/share/fonts/ReadexPro-SemiBold.ttf \
-		-pointsize 50 \
+		-pointsize 100 \
 		label:"$date" \
 		./.date.png
 }
 
 merge_contents() {
-	composite -geometry +40+25 \
+	composite -geometry +80+50 \
 	./.title.png ./.bg.png "./$title.png"
-	composite -geometry +40+120 \
+	composite -geometry +80+230 \
 	./.poem_content.png "./$title.png" "./$title.png"
 	composite -gravity SouthEast \
-	-geometry +40+28 \
+	-geometry +80+56 \
 	./.date.png "./$title.png" "./$title.png"
 }
 

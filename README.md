@@ -14,7 +14,7 @@ For making poem posts for my [Instagram](https://www.instagram.com/dybdeskarphet
 
 # Screenshots
 ## Poemakegr
-<img src="screenshot_gr.png" alt="Poemakegr">
+<img width="1000" height="1000" src="screenshot_gr.png" alt="Poemakegr">
 
 ## Poemaker
-<img src="screenshot.png" alt="Poemaker">
+<img width="1000" height="1000" src="screenshot.png" alt="Poemaker">
