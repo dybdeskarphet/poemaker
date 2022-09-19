@@ -14,7 +14,7 @@ __poemaker:__ Creates solid colored square with text.
 Because of my old commit where I added a 6000x6000(px) PNG file 😬. Use `Download ZIP` from the `Code` menu instead of cloning the repository.
 
 ### What are these used for?
-For making poem posts for my [Instagram](https://www.instagram.com/dybdeskarphet.siir).
+For making poem posts for my [Instagram](https://www.instagram.com/dybdeskarphet).
 
 ## 🖼️ Screenshots
 ### Poemakegr
