@@ -29,7 +29,7 @@ For making poem posts for my [Instagram](https://www.instagram.com/dybdeskarphet
 
 ### Poemakegr
 
-<img src="screenshot_gr.jpg" alt="Poemakegr">
+<img src="screenshot_gradient.jpg" alt="Poemakegr">
 
 ### Poemaker
 
