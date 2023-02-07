@@ -1,0 +1,86 @@
+#!/bin/bash
+declare -a light1
+declare -a light2
+declare -a dark1
+declare -a dark2
+
+declare -a comb1
+declare -a comb2
+
+light1=("ffcdd2" "f8bbd0" "e1bee7" "d1c4e9" "c5cae9" "bbdefb" "b3e5fc" "b2ebf2" "b2dfdb" "c8e6c9" "dcedc8" "f0f4c3" "fff9c4" "ffecb3" "ffe0b2" "ffccbc" "d7ccc8")
+light2=("ffcdd2" "f8bbd0" "e1bee7" "d1c4e9" "c5cae9" "bbdefb" "b3e5fc" "b2ebf2" "b2dfdb" "c8e6c9" "dcedc8" "f0f4c3" "fff9c4" "ffecb3" "ffe0b2" "ffccbc" "d7ccc8")
+
+dark1=("f44336" "e91e63" "9c27b0" "673ab7" "3f51b5" "2196f3" "03a9f4" "00bcd4" "009688" "4caf50" "8bc34a" "cddc39" "ffeb3b" "ffc107" "ff9800" "ff5722" "795548")
+dark2=("f44336" "e91e63" "9c27b0" "673ab7" "3f51b5" "2196f3" "03a9f4" "00bcd4" "009688" "4caf50" "8bc34a" "cddc39" "ffeb3b" "ffc107" "ff9800" "ff5722" "795548")
+
+# light_folder="light-$(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 5)"
+# dark_folder="dark-$(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 5)"
+light_folder="light-bg"
+dark_folder="dark-bg"
+mkdir "$light_folder"
+mkdir "$dark_folder"
+
+# "$(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 32)"
+
+create_light() {
+	number=1
+	for i in "${light1[@]}"; do
+		for j in "${light2[@]}"; do
+			if [[ "$j" != "$i" ]]; then
+				comb1+=("$i-$j")
+				if [[ ! " ${comb1[*]} " =~ " $j-$i " ]]; then
+					name="$number"
+					number=$((number + 1))
+					convert -size 2000x2000 gradient:"#$i"-"#$j" -rotate -90 "$light_folder"/"$name.png"
+				fi
+			fi
+		done
+	done
+
+	for i in $(ls -1 "$light_folder"); do
+		noext=${i%.*}
+		if [[ $((noext % 2)) -eq 0 ]]; then
+			mogrify -rotate 180 "$light_folder/$i"
+		fi
+	done
+}
+
+create_dark() {
+	number=1
+	for i in "${dark1[@]}"; do
+		for j in "${dark2[@]}"; do
+			if [[ "$j" != "$i" ]]; then
+				comb2+=("$i-$j")
+				if [[ ! " ${comb2[*]} " =~ " $j-$i " ]]; then
+					name="$number"
+					number=$((number + 1))
+					convert -size 2000x2000 gradient:"#$i"-"#$j" -rotate -90 "$dark_folder"/"$name.png"
+				fi
+			fi
+		done
+	done
+
+	for i in $(ls -1 "$dark_folder"); do
+		noext=${i%.*}
+		if [[ $((noext % 2)) -eq 0 ]]; then
+			mogrify -rotate 180 "$dark_folder/$i"
+		fi
+	done
+}
+
+printf '%s\n' "Creating dark gradients..."
+if create_dark; then
+	printf '%s\n\n' "Dark gradients are created!"
+else
+	printf '%s\n\n' "Cannot create dark gradients :("
+	exit 1
+fi
+
+printf '%s\n' "Creating light gradients..."
+if create_light; then
+	printf '%s\n\n' "Light gradients are created!"
+else
+	printf '%s\n\n' "Cannot create light gradients :("
+	exit 1
+fi
+

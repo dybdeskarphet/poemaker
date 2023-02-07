@@ -1,30 +1,51 @@
 #!/bin/bash
-
-input_1="$1"
-
-if [[ $input_1 = "" ]]; then
-	printf "please give a file path: poemaker <filename>\n"
+#
+if [[ $1 = "" ]] || [[ $2 = "" ]] || [[ $3 = "" ]]; then
+	printf "missing arguments: poemaker <theme> <icon> <filename>\n"
 	exit 1
 fi
 
-title="$(head -n 1 $1)"
-poem_content="$(sed -E '1d;:a;N;$!ba;s/\r{0,1}\n/\\n/g' ./$1)"
-date="$(date '+%y.%-m.%-d')"
-gradient_number="$(shuf -i 1-30 -n 1)"
+if [[ $1 = dark ]]; then
+	gradient_theme="dark"
+elif [[ $1 = light ]]; then
+	gradient_theme="light"
+elif [[ $1 = rand* ]]; then
+	gradient_theme="$(shuf -n1 -e light dark)"
+else
+	printf '%s\n' "invalid theme name: acceptable values are 'dark', 'light' and 'random'"
+	exit 1
+fi
 
-if [[ $gradient_number -le 16 ]]; then
+title="$(head -n 1 $3)"
+poem_content="$(sed -E '1d;:a;N;$!ba;s/\r{0,1}\n/\\n/g' ./$3)"
+date="$(date '+%y.%-m.%-d')"
+selected_gradient="$(find $HOME/.local/share/poemaker/$gradient_theme-bg -type f | shuf -n 1)"
+icon="$HOME/.local/share/poemaker/icons/$2.png"
+
+if [[ $gradient_theme = "dark" ]]; then
 	text_color="#ffffff"
 else
 	text_color="#000000"
 fi
 
+if [[ ! -f "$icon" ]]; then
+	printf '\n%s\n' "please give a valid icon name:"
+	for i in $(ls -1 "$HOME/.local/share/poemaker/icons")
+	do
+		printf '%s\n' "- ${i%.*}"
+	done
+	echo
+
+	exit 1
+fi
+
 create_contents() {
-	cp ""$HOME"/.local/share/gradients/$gradient_number.png" ./.bg.png
+	cp "$selected_gradient" ./.bg.png
 
 	convert -background transparent \
 		-fill "$text_color" \
 		-font "$HOME"/.local/share/fonts/ReadexPro-Bold.ttf \
-		-pointsize 120 \
+		-pointsize 115 \
 		label:"$title" \
 		./.title.png
 
@@ -32,28 +53,53 @@ create_contents() {
 		-fill "$text_color" \
 		-font "$HOME"/.local/share/fonts/ReadexPro-Light.ttf \
 		-interline-spacing -8 \
-		-pointsize 80 \
+		-pointsize 72 \
 		label:"$poem_content" \
 		./.poem_content.png
 
 	convert -background transparent \
 		-fill "$text_color" \
 		-font "$HOME"/.local/share/fonts/ReadexPro-SemiBold.ttf \
-		-pointsize 110 \
+		-pointsize 120 \
 		label:"$date" \
 		./.date.png
+
+	if [[ $gradient_theme = "dark" ]]; then
+		convert "$icon" -channel RGB -negate ./.icon.png > /dev/null 2>&1
+	else
+		cp "$icon" ./.icon.png
+	fi
 }
 
 merge_contents() {
 	composite -geometry +80+50 \
-	./.title.png ./.bg.png "./$title.png"
+		./.title.png ./.bg.png "./$title.png"
 	composite -geometry +80+230 \
-	./.poem_content.png "./$title.png" "./$title.png"
+		./.poem_content.png "./$title.png" "./$title.png"
 	composite -gravity SouthEast \
-	-geometry +80+56 \
-	./.date.png "./$title.png" "./$title.png"
+		-geometry +80+56 \
+		./.date.png "./$title.png" "./$title.png"
+	composite -gravity SouthWest \
+		-geometry +80+80 \
+		"./.icon.png" "./$title.png" "./$title.png"
 }
 
-create_contents
-merge_contents
-rm ./.bg.png ./.title.png ./.poem_content.png ./.date.png
+printf '%s\n' "Creating contents..."
+
+if create_contents; then
+	printf '%s\n' "Contents are created!"
+else
+	printf '%s\n' "Contents couldn't be created :("
+	exit 1
+fi
+
+printf '\n%s\n' "Merging contents..."
+
+if merge_contents; then
+	printf '%s\n' "Contents have been merged!"
+else
+	printf '%s\n' "Contents couldn't be merged :("
+	exit 1
+fi
+
+rm ./.bg.png ./.title.png ./.poem_content.png ./.date.png ./.icon.png
